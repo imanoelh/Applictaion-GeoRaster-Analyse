@@ -1,0 +1,321 @@
+========================================
+GEORASTERPORTAL DEV_V1
+NOTICE D’INSTALLATION SUR UNE NOUVELLE MACHINE
+========================================
+
+Objectif
+--------
+Installer et lancer la version dev_v1 du projet GeoRasterPortal avec le
+backend FastAPI, le frontend Vite et Google Earth Engine.
+
+Dépôt GitHub :
+https://github.com/gissolutionsib/RaterPortal.git
+Branche : dev_v1
+
+IMPORTANT : les gros modèles IA, les rasters de test, les caches et les
+artefacts de fine-tuning sont volontairement exclus du dépôt Git. Ils doivent
+être copiés depuis le stockage interne prévu avant d’utiliser Building AI.
+
+1. PRÉREQUIS
+------------
+- Git
+- Python 3.12 recommandé
+- Node.js 20+ et npm
+- 4 Go de RAM recommandés pour l’installation
+- Accès réseau pour l’installation des dépendances et Earth Engine
+
+2. CLONER LA BONNE BRANCHE
+--------------------------
+Windows PowerShell :
+  git clone --branch dev_v1 --single-branch https://github.com/gissolutionsib/RaterPortal.git
+  cd RaterPortal
+
+Linux/macOS :
+  git clone --branch dev_v1 --single-branch https://github.com/gissolutionsib/RaterPortal.git
+  cd RaterPortal
+
+Vérification obligatoire :
+  git branch --show-current
+La commande doit afficher : dev_v1
+
+3. INSTALLER LE BACKEND
+-----------------------
+Windows PowerShell :
+  cd backend
+  py -3.12 -m venv .venv
+  .\.venv\Scripts\Activate.ps1
+  python -m pip install --upgrade pip
+  python -m pip install -r requirements.txt
+
+Linux/macOS :
+  cd backend
+  python3.12 -m venv .venv
+  source .venv/bin/activate
+  python -m pip install --upgrade pip
+  python -m pip install -r requirements.txt
+
+4. COPIER LES MODÈLES IA
+------------------------
+Les poids volumineux sont exclus du dépôt. Copier depuis le stockage interne :
+
+  backend/data/fine_tuning/buildings/maxar_v2_high_precision/14A11_hybrid_pipeline/models/MODEL_C8_HYBRID_epoch2.pth
+  backend/data/models/building/experimental/spacenet2-deeplab/best_deeplab.pth
+
+Le premier est le moteur Building par défaut. Le second est le fallback MODEL_C.
+
+SHA256 C8 :
+  32f48ba94385206ed3e1cc8a156b73ac33810525f05a6bb3fd51b16c486a7576
+
+SHA256 MODEL_C :
+  170c49e1f42737f5a4b3922b9fc58b25b6ba0a7dd7bf00b9186a92ccb84dc555
+
+Ne pas renommer ni modifier les checkpoints.
+
+5. CONFIGURER GOOGLE EARTH ENGINE
+---------------------------------
+Compte autorisé :
+  imane19elhamri@gmail.com
+
+Dans l’environnement backend :
+  earthengine authenticate
+
+Suivre le navigateur Google jusqu’à la fin. Alternative :
+  python -m earthengine authenticate
+
+PowerShell :
+  $env:GEE_PROJECT_ID="gee-satellite-project-123456"
+  $env:GEE_ACCOUNT_EMAIL="imane19elhamri@gmail.com"
+
+Linux/macOS :
+  export GEE_PROJECT_ID="gee-satellite-project-123456"
+  export GEE_ACCOUNT_EMAIL="imane19elhamri@gmail.com"
+
+L’authentification est locale à la machine et ne doit jamais être commitée.
+
+6. LANCER LE BACKEND
+--------------------
+Depuis la racine, dans un terminal où l’environnement Python est activé :
+  cd backend
+  python -m uvicorn app.main:app --host 127.0.0.1 --port 8011
+
+URLs :
+  API      http://127.0.0.1:8011
+  Swagger  http://127.0.0.1:8011/docs
+  Health   http://127.0.0.1:8011/api/health
+  GEE      http://127.0.0.1:8011/api/gee/status
+
+Le statut GEE doit indiquer enabled=true.
+
+7. INSTALLER ET LANCER LE FRONTEND
+----------------------------------
+Dans un deuxième terminal :
+  cd frontend
+  npm install
+
+Créer ou vérifier frontend/.env.local :
+  VITE_API_BASE_URL=http://127.0.0.1:8011
+
+Lancer :
+  npm run dev -- --host 127.0.0.1 --port 5184
+
+URL :
+  http://127.0.0.1:5184/map
+
+8. ORDRE RECOMMANDÉ
+-------------------
+1) Activer l’environnement Python.
+2) Définir les variables GEE.
+3) Démarrer le backend sur 8011.
+4) Vérifier /api/health et /api/gee/status.
+5) Démarrer le frontend sur 5184.
+6) Ouvrir http://127.0.0.1:5184/map.
+
+9. VÉRIFICATION FINALE
+----------------------
+Backend :
+  GET http://127.0.0.1:8011/api/health     -> HTTP 200
+  GET http://127.0.0.1:8011/api/gee/status  -> enabled=true
+
+Frontend :
+  http://127.0.0.1:5184/map                -> interface visible
+
+Building AI :
+  Source = Local orthophoto
+  Modèle par défaut = model_c8_hybrid
+  Taille tuile = 512
+  Seuil = 0.50
+
+GEE :
+  sélectionner Sentinel-2 / GEE et vérifier l’absence d’erreur d’authentification.
+
+10. TESTS OPTIONNELS
+--------------------
+Backend :
+  python -m pytest tests -q
+
+Frontend :
+  cd frontend
+  npm test
+  npm run build
+
+11. PROBLÈMES COURANTS
+----------------------
+- Module Python manquant : vérifier backend/.venv activé puis réinstaller requirements.
+- Port occupé : arrêter le processus ou modifier le port et VITE_API_BASE_URL.
+- GEE disabled : refaire earthengine authenticate, vérifier le projet, redémarrer le backend.
+- Modèle Building indisponible : les checkpoints de l’étape 4 ne sont pas présents.
+- Frontend sans API : vérifier frontend/.env.local et le port 8011.
+
+12. SÉCURITÉ
+------------
+Ne jamais commiter tokens Earth Engine, credentials Google, fichiers .env.local,
+checkpoints privés, caches, uploads ou données clients.
+
+Cette notice décrit uniquement l’installation et le lancement. Elle ne modifie
+aucun indice, export, traitement historique, frontend, mode offline ou modèle.
+========================================
+FIN DE LA NOTICE
+========================================
+
+
+ANNEXE WINDOWS — PROCÉDURE EXACTE COPIER/COLLER
+================================================
+
+Cette procédure est destinée à Windows PowerShell. Exécuter les commandes
+dans l’ordre. Ouvrir deux fenêtres PowerShell séparées à l’étape 8.
+
+ÉTAPE W1 — VÉRIFIER LES OUTILS
+-------------------------------
+  git --version
+  py --version
+  node --version
+  npm --version
+
+Python doit être 3.12.x et Node.js doit être au minimum 20.x.
+Si une commande n’est pas reconnue, installer l’outil puis rouvrir PowerShell.
+
+ÉTAPE W2 — CLONER DEV_V1
+------------------------
+  Set-Location "D:\"
+  git clone --branch dev_v1 --single-branch https://github.com/gissolutionsib/RaterPortal.git
+  Set-Location "D:\RaterPortal"
+  git branch --show-current
+
+Résultat attendu :
+  dev_v1
+
+Si D:\RaterPortal existe déjà :
+  Set-Location "D:\RaterPortal"
+  git fetch origin dev_v1
+  git switch dev_v1
+  git pull --ff-only origin dev_v1
+
+ÉTAPE W3 — CRÉER L’ENVIRONNEMENT PYTHON
+----------------------------------------
+  Set-Location "D:\RaterPortal\backend"
+  py -3.12 -m venv .venv
+  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+  .\.venv\Scripts\Activate.ps1
+  python --version
+  python -m pip install --upgrade pip
+  python -m pip install -r requirements.txt
+
+Résultat attendu après activation :
+  (.venv) apparaît au début de la ligne PowerShell.
+
+ÉTAPE W4 — COPIER LES CHECKPOINTS IA
+-------------------------------------
+Créer les dossiers si nécessaire :
+  New-Item -ItemType Directory -Force "D:\RaterPortal\backend\data\fine_tuning\buildings\maxar_v2_high_precision\14A11_hybrid_pipeline\models" | Out-Null
+  New-Item -ItemType Directory -Force "D:\RaterPortal\backend\data\models\building\experimental\spacenet2-deeplab" | Out-Null
+
+Copier ensuite les deux fichiers depuis le stockage interne vers :
+  D:\RaterPortal\backend\data\fine_tuning\buildings\maxar_v2_high_precision\14A11_hybrid_pipeline\models\MODEL_C8_HYBRID_epoch2.pth
+  D:\RaterPortal\backend\data\models\building\experimental\spacenet2-deeplab\best_deeplab.pth
+
+Contrôler leur présence :
+  Test-Path "D:\RaterPortal\backend\data\fine_tuning\buildings\maxar_v2_high_precision\14A11_hybrid_pipeline\models\MODEL_C8_HYBRID_epoch2.pth"
+  Test-Path "D:\RaterPortal\backend\data\models\building\experimental\spacenet2-deeplab\best_deeplab.pth"
+
+Les deux commandes doivent retourner :
+  True
+
+ÉTAPE W5 — AUTHENTIFIER EARTH ENGINE
+------------------------------------
+Dans le même terminal où (.venv) est visible :
+  earthengine authenticate
+
+Si « earthengine » n’est pas reconnu :
+  python -m earthengine authenticate
+
+Terminer l’autorisation dans le navigateur avec :
+  imane19elhamri@gmail.com
+
+ÉTAPE W6 — DÉFINIR LA CONFIGURATION GEE
+---------------------------------------
+Toujours dans ce terminal :
+  $env:GEE_PROJECT_ID = "gee-satellite-project-123456"
+  $env:GEE_ACCOUNT_EMAIL = "imane19elhamri@gmail.com"
+  $env:C8_TORCH_THREADS = "2"
+
+Vérifier :
+  $env:GEE_PROJECT_ID
+  $env:GEE_ACCOUNT_EMAIL
+
+ÉTAPE W7 — LANCER LE BACKEND
+----------------------------
+Dans le terminal backend activé :
+  Set-Location "D:\RaterPortal\backend"
+  .\.venv\Scripts\Activate.ps1
+  $env:GEE_PROJECT_ID = "gee-satellite-project-123456"
+  $env:GEE_ACCOUNT_EMAIL = "imane19elhamri@gmail.com"
+  $env:C8_TORCH_THREADS = "2"
+  python -m uvicorn app.main:app --host 127.0.0.1 --port 8011
+
+Laisser cette fenêtre ouverte.
+
+ÉTAPE W8 — VÉRIFIER LE BACKEND
+------------------------------
+Ouvrir une deuxième fenêtre PowerShell et exécuter :
+  Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8011/api/health
+  Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8011/api/gee/status
+
+Résultats attendus :
+  HTTP 200 pour les deux appels.
+  /api/gee/status doit indiquer enabled=true.
+
+ÉTAPE W9 — INSTALLER LE FRONTEND
+--------------------------------
+Dans la deuxième fenêtre :
+  Set-Location "D:\RaterPortal\frontend"
+  npm install
+  Set-Content -Path .env.local -Value "VITE_API_BASE_URL=http://127.0.0.1:8011"
+
+ÉTAPE W10 — LANCER LE FRONTEND
+------------------------------
+  npm run dev -- --host 127.0.0.1 --port 5184
+
+Laisser cette fenêtre ouverte, puis ouvrir Chrome à l’adresse :
+  http://127.0.0.1:5184/map
+
+ÉTAPE W11 — TESTER GEE DANS L’APPLICATION
+-----------------------------------------
+1. Ouvrir le module Map & Analysis.
+2. Sélectionner la source « Sentinel-2 / GEE ».
+3. Dessiner un AOI.
+4. Lancer la recherche d’images.
+5. Vérifier qu’aucune erreur d’authentification n’est affichée.
+
+ÉTAPE W12 — ARRÊTER PROPREMENT
+------------------------------
+Dans chaque fenêtre PowerShell où un serveur tourne :
+  Ctrl+C
+
+RÉSUMÉ DES URL WINDOWS
+----------------------
+Frontend : http://127.0.0.1:5184/map
+Backend  : http://127.0.0.1:8011
+Health   : http://127.0.0.1:8011/api/health
+GEE      : http://127.0.0.1:8011/api/gee/status
+Swagger  : http://127.0.0.1:8011/docs
+

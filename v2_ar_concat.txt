@@ -1,0 +1,7 @@
+file 'D:/Personel/TASK/WebGIS Raster Aanalyse/Protoype WebGIS Raster Analyse/Georaster-19-10/Georaster-19-10/v2_ar_01_pad.m4a'
+file 'D:/Personel/TASK/WebGIS Raster Aanalyse/Protoype WebGIS Raster Analyse/Georaster-19-10/Georaster-19-10/v2_ar_02_pad.m4a'
+file 'D:/Personel/TASK/WebGIS Raster Aanalyse/Protoype WebGIS Raster Analyse/Georaster-19-10/Georaster-19-10/v2_ar_03_pad.m4a'
+file 'D:/Personel/TASK/WebGIS Raster Aanalyse/Protoype WebGIS Raster Analyse/Georaster-19-10/Georaster-19-10/v2_ar_04_pad.m4a'
+file 'D:/Personel/TASK/WebGIS Raster Aanalyse/Protoype WebGIS Raster Analyse/Georaster-19-10/Georaster-19-10/v2_ar_05_pad.m4a'
+file 'D:/Personel/TASK/WebGIS Raster Aanalyse/Protoype WebGIS Raster Analyse/Georaster-19-10/Georaster-19-10/v2_ar_06_pad.m4a'
+file 'D:/Personel/TASK/WebGIS Raster Aanalyse/Protoype WebGIS Raster Analyse/Georaster-19-10/Georaster-19-10/v2_ar_07_pad.m4a'

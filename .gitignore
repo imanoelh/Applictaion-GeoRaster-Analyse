@@ -1,0 +1,74 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+.output
+.vinxi
+.tanstack/**
+.nitro
+*.local
+
+# Python / backend local state
+__pycache__/
+*.py[cod]
+.pytest_cache/
+backend/.venv/
+backend/data/*.db
+backend/data/*.sqlite
+backend/data/*.sqlite3
+backend/data/*.json
+backend/data/cache/
+
+# Wrangler / Cloudflare
+.wrangler/
+.dev.vars
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+backend/data/*.db-shm
+backend/data/*.db-wal
+backend/uploads/
+
+# Runtime-generated exports
+backend/exports/files/
+backend/exports/map-layouts/*.png
+backend/exports/reports/*.pdf
+
+# Local Codex/QGIS build scratch and auxiliary virtual environments
+.codex-*/
+.venv_*/
+backend/.pytest-runtime/
+backend/.venv/
+**/orthogonalization_env/
+**/hf_home/
+**/.pytest-runtime/
+**/geoai_package/
+backend/backend/
+
+# Large local AI assets and evaluation artifacts (kept locally, not committed)
+backend/data/models/
+backend/data/benchmarks/
+backend/data/fine_tuning/
+test-data/
+backend/gee_home/
+
+# Local demonstration media and generated reports
+*.mp4
+*.wav
+GeoRaster_Report_*.pdf
